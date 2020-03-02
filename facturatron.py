@@ -25,6 +25,7 @@ def basico():
         bill.setFont('Times-Italic', size=10)
         bill.drawCentredString(x_size/2, 785, subtitle)
         bill.setFont('Helvetica', size=10)
+        bill.drawImage('./img/receptionist.png', margin_h, 770, width=64, height=64)
         empresa(bill, margin_h, 750)
         cliente(bill, x_size - margin_h, 750 - 15)
         nFactura(bill, x_size - margin_h, 750)
@@ -97,7 +98,10 @@ def datosReserva(bill):
         bill.drawRightString(x, y, line[1])
         x += ancho
         if line[2] != '':
-            bill.drawRightString(x + 10, y, "{0:.2f}".format(float(line[2])))
+            txt = "{0:.2f}".format(float(line[2]))
+            if txt != '':
+                txt += ' €'
+            bill.drawRightString(x + 10, y, txt)
         x += ancho
         bill.drawRightString(x, y, "{0:.2f}".format(float(line[3])) + " €")
         x += ancho
@@ -160,6 +164,7 @@ def cliente(bill, posx, posy):
     for line in funcionescli.leerDatosCli():
         bill.drawRightString(posx, posy, line)
         posy -= 15
+    bill.drawRightString(posx, posy, 'Fecha factura: ' + variables.header_preview[1].get_text())
 
 
 def empresa(bill, posx, posy):

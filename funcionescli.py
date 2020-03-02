@@ -89,9 +89,8 @@ def leerDatosCli():
         filacli = conexion.cur.fetchall()[0]
         conexion.connect.commit()
         resul = (
-            'DNI: ' + str(filacli[0]),
-            'Nombre: ' + str(filacli[2]) + ' ' + str(filacli[1]),
-            'Alta: ' + str(filacli[3]),
+            'Cliente: ' + str(filacli[0]),
+            str(filacli[2]) + ' ' + str(filacli[1]),
         )
         return resul
     except sqlite3.OperationalError as e:
