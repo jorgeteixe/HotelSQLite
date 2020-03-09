@@ -30,7 +30,7 @@ def basico():
         cliente(bill, x_size - margin_h, 750 - 15)
         nFactura(bill, x_size - margin_h, 750)
         separador(bill, 750 - 15 * 4)
-        textpie = 'Hotel Lite, CIF = 00000000A Tlfo = 986000000 mail = info@hotellite.com'
+        textpie = 'Hotel Lite, CIF = B65432154 Tlfo = 981763481 mail = hotelite@sqlite.es'
         bill.setFont('Times-Italic', size=8)
         bill.drawString(170, 20, textpie)
         separador(bill, 30)

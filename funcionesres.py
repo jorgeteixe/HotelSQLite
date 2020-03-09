@@ -66,9 +66,14 @@ def listarnumhab():
 
 def insertarres(registro):
     try:
-        conexion.cur.execute("insert into reservas(cliente, habitacion, checkin, checkout, noches, regimen, parking, "
-                             "personas) values (?,?,?,?,?, 'alojamiento', 'no', 1)", registro)
-        conexion.connect.commit()
+        if fechasdisponibles(registro[1], registro[2], registro[3]):
+            conexion.cur.execute(
+                "insert into reservas(cliente, habitacion, checkin, checkout, noches, regimen, parking, "
+                "personas) values (?,?,?,?,?, 'alojamiento', 'no', 1)", registro)
+            conexion.connect.commit()
+        else:
+            print(' fechas no disponibles')
+
     except sqlite3.OperationalError as e:
         print(e)
         conexion.connect.rollback()
@@ -103,3 +108,25 @@ def modificar(registro):
     except sqlite3.OperationalError as e:
         print(e)
         conexion.connect.rollback()
+
+def fechasdisponibles(hab, cin, cout):
+    try:
+        conexion.cur.execute("select checkin, checkout from reservas where habitacion = ?", (hab,))
+        reservas = conexion.cur.fetchall()
+        conexion.connect.commit()
+
+        fa = datetime.strptime(cin, '%d/%m/%Y')
+        fb = datetime.strptime(cout, '%d/%m/%Y')
+        for r in reservas:
+            f1 = datetime.strptime(r[0], '%d/%m/%Y')
+            f2 = datetime.strptime(r[1], '%d/%m/%Y')
+            if f2 <= fa:
+                pass
+            elif f1 >= fb:
+                pass
+            else:
+                return False
+
+        return True
+    except Exception as e:
+        print(e)
