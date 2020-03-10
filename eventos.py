@@ -154,7 +154,7 @@ class Eventos():
                 tipo = 'Family'
 
             prezo = variables.filahab[2].get_text()
-            registro = (num, tipo, prezo)
+            registro = (num, tipo, prezo.replace(',', '.'))
             if num != '' and tipo != '' and prezo != '':
                 funcioneshab.insertarhab(registro)
                 funcioneshab.ponerListadoEnGUI()
@@ -553,7 +553,11 @@ class Eventos():
                                      (desayuno, mediap, parking))
                 conexion.connect.commit()
             variables.wselectprecios.hide()
-            funcionesser.listarServiciosEnPreview()
+            if variables.header_preview[2].get_text() != '':
+                funcionesser.listarServiciosEnPreview()
         except Exception as e:
-            print('Detalles:', e)
+            print('Detalles: ', e)
             conexion.connect.rollback()
+
+    def on_btnToolListado_clicked(self, widget):
+        facturatron.listado_entradas()

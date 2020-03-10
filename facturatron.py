@@ -1,10 +1,12 @@
 # coding=utf-8
 import os
 import traceback
+from datetime import datetime
 
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
+import conexion
 import funcioneshab
 import funcionesser
 import variables
@@ -16,9 +18,10 @@ y_size = 841.8897637795275
 margin_h = 50
 pos = 0
 
-def basico():
+def basico(factura = True, file = 'factura.pdf', first = True, bill = None):
     try:
-        bill = canvas.Canvas('factura.pdf', pagesize=A4)
+        if first:
+            bill = canvas.Canvas(file, pagesize=A4)
         subtitle = 'Si no le ha gustado, no vuelva. Pero no deje mala nota en TripAdvisor.'
         bill.setFont('Helvetica-Bold', size=16)
         bill.drawCentredString(x_size/2, 800, 'HOTEL LITE')
@@ -27,8 +30,9 @@ def basico():
         bill.setFont('Helvetica', size=10)
         bill.drawImage('./img/receptionist.png', margin_h, 770, width=64, height=64)
         empresa(bill, margin_h, 750)
-        cliente(bill, x_size - margin_h, 750 - 15)
-        nFactura(bill, x_size - margin_h, 750)
+        if factura:
+            cliente(bill, x_size - margin_h, 750 - 15)
+            nFactura(bill, x_size - margin_h, 750)
         separador(bill, 750 - 15 * 4)
         textpie = 'Hotel Lite, CIF = B65432154 Tlfo = 981763481 mail = hotelite@sqlite.es'
         bill.setFont('Times-Italic', size=8)
@@ -37,7 +41,6 @@ def basico():
         return bill
     except Exception:
         traceback.print_exc()
-
 
 def datosReserva(bill):
     # Titulo reserva
@@ -139,8 +142,6 @@ def datosReserva(bill):
     bill.drawRightString((totalx1 + totalx2) / 2 - 15, totaly2 - 45 - 3, "TOTAL: ")
     bill.drawRightString((totalx1 + totalx2) / 2 + 40, totaly2 - 45 - 3, total + " €")
 
-
-
 def factura():
     try:
         bill = basico()
@@ -150,6 +151,32 @@ def factura():
         bill.save()
         directorio = os.getcwd()
         os.system('/usr/bin/xdg-open ' + directorio + '/factura.pdf')
+    except Exception:
+        traceback.print_exc()
+
+
+def listado_entradas():
+    try:
+        bill = basico(factura=False, file='clientes.pdf')
+        bill.setTitle('Clientes Hotel Lite')
+        entrada(bill, x_size - margin_h, 750 - 15)
+        # listar entradas
+        print('entradas')
+        print(listar_entradas())
+
+        bill.showPage()
+        canvas.Canvas._pageNumber = 2
+        basico(factura=False, first=False, bill=bill)
+        salida(bill, x_size - margin_h, 750 - 15)
+        # listar salidas
+        print('salidas')
+        print(listar_entradas())
+
+
+        bill.showPage()
+        bill.save()
+        directorio = os.getcwd()
+        os.system('/usr/bin/xdg-open ' + directorio + '/clientes.pdf')
     except Exception:
         traceback.print_exc()
 
@@ -176,3 +203,44 @@ def empresa(bill, posx, posy):
 
 def separador(bill, h):
     bill.line(margin_h, h, x_size - margin_h, h)
+
+
+def entrada(bill, posx, posy):
+    bill.setFont('Helvetica-Bold', size=10)
+    lineas = (
+        'Entradas       ',
+        'Fecha: %s ' % datetime.now().strftime('%d/%m/%Y'),
+    )
+    for line in lineas:
+        bill.drawRightString(posx, posy, line)
+        bill.setFont('Helvetica', size=10)
+        posy -= 15
+
+
+def salida(bill, posx, posy):
+    bill.setFont('Helvetica-Bold', size=10)
+    lineas = (
+        'Salidas       ',
+        'Fecha: %s ' % datetime.now().strftime('%d/%m/%Y'),
+    )
+    for line in lineas:
+        bill.drawRightString(posx, posy, line)
+        bill.setFont('Helvetica', size=10)
+        posy -= 15
+
+def listar_salidas():
+    try:
+        conexion.cur.execute("select habitacion, checkin, checkout, cliente from reservas where checkin = ?", (datetime.now().strftime('%d/%m/%Y'),))
+        salidas = conexion.cur.fetchall()
+        conexion.connect.commit()
+        return salidas[0]
+    except Exception as e:
+        print('Detalles: ', e)
+def listar_entradas():
+    try:
+        conexion.cur.execute("select habitacion, checkin, checkout, cliente from reservas where checkout = ?", (datetime.now().strftime('%d/%m/%Y'),))
+        entradas = conexion.cur.fetchall()
+        conexion.connect.commit()
+        return entradas[0]
+    except Exception as e:
+        print('Detalles: ', e)
