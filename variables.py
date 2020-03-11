@@ -52,3 +52,5 @@ datos_hotel = (
     'Web: hoteliteqlite.es',
     'Dirección: Camiño da Rivada 1, 36693',
 )
+wdialog = None
+lbldialog = None

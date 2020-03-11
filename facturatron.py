@@ -161,17 +161,54 @@ def listado_entradas():
         bill.setTitle('Clientes Hotel Lite')
         entrada(bill, x_size - margin_h, 750 - 15)
         # listar entradas
-        print('entradas')
-        print(listar_entradas())
+        entradas = listar_entradas()
+        ancho = (x_size - 2 * margin_h) / 4 + 10
+        bill.setFont('Helvetica-Bold', size=10)
+        bill.drawString(13 + margin_h, 677, "HABITACIÓN")
+        bill.drawString(13 + margin_h + ancho, 677, "ENTRADA")
+        bill.drawString(13 + margin_h + 2 * ancho, 677, "SALIDA")
+        bill.drawString(13 + margin_h + 3 * ancho, 677, "CLIENTE")
+        bill.setFont('Helvetica', size=10)
+        separador(bill, 670)
+        y = 655
+        for line in entradas:
+            x = 13 + margin_h
+            bill.drawString(x + 20, y, line[0])
+            x += ancho
+            bill.drawString(x, y, line[1])
+            x += ancho
+            bill.drawString(x - 5, y, line[2])
+            x += ancho
+            bill.drawString(x, y, line[3])
+            x += ancho
+            y -= 15
+
 
         bill.showPage()
         canvas.Canvas._pageNumber = 2
         basico(factura=False, first=False, bill=bill)
         salida(bill, x_size - margin_h, 750 - 15)
         # listar salidas
-        print('salidas')
-        print(listar_entradas())
-
+        salidas = listar_salidas()
+        ancho = (x_size - 2 * margin_h) / 4 + 10
+        bill.setFont('Helvetica-Bold', size=10)
+        bill.drawString(13 + margin_h, 677, "HABITACIÓN")
+        bill.drawString(13 + margin_h + ancho, 677, "ENTRADA")
+        bill.drawString(13 + margin_h + 2 * ancho, 677, "SALIDA")
+        bill.drawString(13 + margin_h + 3 * ancho, 677, "CLIENTE")
+        bill.setFont('Helvetica', size=10)
+        separador(bill, 670)
+        for line in salidas:
+            x = 13 + margin_h
+            bill.drawString(x + 20, y, line[0])
+            x += ancho
+            bill.drawString(x, y, line[1])
+            x += ancho
+            bill.drawString(x - 5, y, line[2])
+            x += ancho
+            bill.drawString(x, y, line[3])
+            x += ancho
+            y -= 15
 
         bill.showPage()
         bill.save()
@@ -228,19 +265,22 @@ def salida(bill, posx, posy):
         bill.setFont('Helvetica', size=10)
         posy -= 15
 
+
 def listar_salidas():
     try:
-        conexion.cur.execute("select habitacion, checkin, checkout, cliente from reservas where checkin = ?", (datetime.now().strftime('%d/%m/%Y'),))
+        conexion.cur.execute("select habitacion, checkin, checkout, cliente from reservas where checkout = ?", (datetime.now().strftime('%d/%m/%Y'),))
         salidas = conexion.cur.fetchall()
         conexion.connect.commit()
-        return salidas[0]
+        return salidas
     except Exception as e:
         print('Detalles: ', e)
+
+
 def listar_entradas():
     try:
-        conexion.cur.execute("select habitacion, checkin, checkout, cliente from reservas where checkout = ?", (datetime.now().strftime('%d/%m/%Y'),))
+        conexion.cur.execute("select habitacion, checkin, checkout, cliente from reservas where checkin = ?", (datetime.now().strftime('%d/%m/%Y'),))
         entradas = conexion.cur.fetchall()
         conexion.connect.commit()
-        return entradas[0]
+        return entradas
     except Exception as e:
         print('Detalles: ', e)

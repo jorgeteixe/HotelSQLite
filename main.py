@@ -115,6 +115,10 @@ class Empresa:
             b.get_object('entPrecioParking'),
         )
 
+        variables.lbldialog = b.get_object('lblDialog')
+        variables.wdialog = b.get_object('wDialog')
+
+
         b.connect_signals(eventos.Eventos())
         self.wmain.show()
         conexion.Conexion().abrirbbdd()

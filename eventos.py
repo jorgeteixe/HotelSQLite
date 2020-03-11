@@ -561,3 +561,6 @@ class Eventos():
 
     def on_btnToolListado_clicked(self, widget):
         facturatron.listado_entradas()
+
+    def on_btnOk_clicked(self, widget):
+        variables.wdialog.hide()

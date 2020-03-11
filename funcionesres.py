@@ -72,7 +72,9 @@ def insertarres(registro):
                 "personas) values (?,?,?,?,?, 'alojamiento', 'no', 1)", registro)
             conexion.connect.commit()
         else:
-            print(' fechas no disponibles')
+            variables.wdialog.connect('delete-event', lambda w, e: w.hide() or True)
+            variables.lbldialog.set_text('Fechas no disponibles.')
+            variables.wdialog.show()
 
     except sqlite3.OperationalError as e:
         print(e)
@@ -111,13 +113,9 @@ def modificar(registro):
 
 def fechasdisponibles(hab, cin, cout):
     try:
-        conexion.cur.execute("select checkin, checkout from reservas where habitacion = ?", (hab,))
-        reservas = conexion.cur.fetchall()
-        conexion.connect.commit()
-
         fa = datetime.strptime(cin, '%d/%m/%Y')
         fb = datetime.strptime(cout, '%d/%m/%Y')
-        for r in reservas:
+        for r in reservas_habitacion(hab):
             f1 = datetime.strptime(r[0], '%d/%m/%Y')
             f2 = datetime.strptime(r[1], '%d/%m/%Y')
             if f2 <= fa:
@@ -130,3 +128,12 @@ def fechasdisponibles(hab, cin, cout):
         return True
     except Exception as e:
         print(e)
+
+def reservas_habitacion(hab):
+    try:
+        conexion.cur.execute("select checkin, checkout from reservas where habitacion = ?", (hab,))
+        reservas = conexion.cur.fetchall()
+        conexion.connect.commit()
+        return reservas
+    except Exception as e:
+        print('Detalles: ', e)
