@@ -179,7 +179,7 @@ def listado_entradas():
             x += ancho
             bill.drawString(x - 5, y, line[2])
             x += ancho
-            bill.drawString(x, y, line[3])
+            bill.drawString(x, y,  '***' + line[3][3:])
             x += ancho
             y -= 15
 
@@ -198,6 +198,7 @@ def listado_entradas():
         bill.drawString(13 + margin_h + 3 * ancho, 677, "CLIENTE")
         bill.setFont('Helvetica', size=10)
         separador(bill, 670)
+        y = 655
         for line in salidas:
             x = 13 + margin_h
             bill.drawString(x + 20, y, line[0])
@@ -206,7 +207,7 @@ def listado_entradas():
             x += ancho
             bill.drawString(x - 5, y, line[2])
             x += ancho
-            bill.drawString(x, y, line[3])
+            bill.drawString(x, y, '***' + line[3][3:])
             x += ancho
             y -= 15
 
