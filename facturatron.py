@@ -150,7 +150,7 @@ def factura():
         bill.showPage()
         bill.save()
         directorio = os.getcwd()
-        os.system('/usr/bin/xdg-open ' + directorio + '/factura.pdf')
+        os.system('/usr/bin/open ' + directorio + '/factura.pdf')
     except Exception:
         traceback.print_exc()
 
@@ -214,7 +214,7 @@ def listado_entradas():
         bill.showPage()
         bill.save()
         directorio = os.getcwd()
-        os.system('/usr/bin/xdg-open ' + directorio + '/clientes.pdf')
+        os.system('/usr/bin/open ' + directorio + '/clientes.pdf')
     except Exception:
         traceback.print_exc()
 

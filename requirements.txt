@@ -1,0 +1,6 @@
+Pillow==9.2.0
+pycairo==1.21.0
+PyGObject==3.42.2
+reportlab==3.6.11
+xlrd==2.0.1
+xlwt==1.3.0
